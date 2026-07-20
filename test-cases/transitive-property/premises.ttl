@@ -1,0 +1,33 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:TransitiveProperty
+# File      : premises.ttl
+# Purpose   : A chain of two transitive-property assertions must entail the
+#             direct assertion between the endpoints.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/transitive-property> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — transitive property (owl:TransitiveProperty)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:transitivePartOf rdf:type owl:ObjectProperty , owl:TransitiveProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:TransitiveProperty_Piston rdf:type owl:NamedIndividual ;
+    :transitivePartOf :TransitiveProperty_Engine .
+
+:TransitiveProperty_Engine rdf:type owl:NamedIndividual ;
+    :transitivePartOf :TransitiveProperty_Car .
+
+:TransitiveProperty_Car rdf:type owl:NamedIndividual .

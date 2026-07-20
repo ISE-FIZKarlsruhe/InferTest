@@ -1,0 +1,33 @@
+# InferTest — OWL 2 construct test case
+# Construct : rdfs:subPropertyOf (property subsumption)
+# File      : premises.ttl
+# Purpose   : A reasoner must propagate a property assertion up to every
+#             property it is a sub-property of.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/subproperty> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — subproperty (rdfs:subPropertyOf)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:subpropertyHasParent rdf:type owl:ObjectProperty .
+
+:subpropertyHasBiologicalFather rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :subpropertyHasParent .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:Subproperty_Alice rdf:type owl:NamedIndividual ;
+    :subpropertyHasBiologicalFather :Subproperty_Bob .
+
+:Subproperty_Bob rdf:type owl:NamedIndividual .

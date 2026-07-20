@@ -1,0 +1,8 @@
+# InferTest — expected entailments
+# Construct : owl:TransitiveProperty
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Piston partOf Engine, Engine partOf Car -> Piston partOf Car.
+:TransitiveProperty_Piston :transitivePartOf :TransitiveProperty_Car .

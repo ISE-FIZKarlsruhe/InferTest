@@ -1,0 +1,38 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:propertyDisjointWith (OWL 2 new construct)
+# File      : premises.ttl
+# Purpose   : Two individuals related by both halves of a disjoint property
+#             pair must make the ontology INCONSISTENT.
+#
+# See expected-inconsistent.flag instead of expected-entailments.ttl.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/disjoint-properties> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — disjoint properties (owl:propertyDisjointWith)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:disjointPropertiesHasSpouse rdf:type owl:ObjectProperty ;
+    owl:propertyDisjointWith :disjointPropertiesHasSibling .
+
+:disjointPropertiesHasSibling rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Violation: hasSpouse and hasSibling are disjoint, so the same pair of
+### individuals cannot be related by both.
+:DisjointProperties_Alice rdf:type owl:NamedIndividual ;
+    :disjointPropertiesHasSpouse :DisjointProperties_Bob ;
+    :disjointPropertiesHasSibling :DisjointProperties_Bob .
+
+:DisjointProperties_Bob rdf:type owl:NamedIndividual .

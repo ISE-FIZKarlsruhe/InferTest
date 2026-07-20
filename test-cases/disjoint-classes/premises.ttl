@@ -1,0 +1,35 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:disjointWith (class disjointness)
+# File      : premises.ttl
+# Purpose   : An individual typed as a member of two mutually disjoint
+#             classes must make the ontology INCONSISTENT.
+#
+# See expected-inconsistent.flag instead of expected-entailments.ttl.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/disjoint-classes> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — disjoint classes (owl:disjointWith)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:DisjointClasses_Male rdf:type owl:Class ;
+    owl:disjointWith :DisjointClasses_Female .
+
+:DisjointClasses_Female rdf:type owl:Class .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Violation: Sam cannot belong to both disjoint classes at once.
+:DisjointClasses_Sam rdf:type owl:NamedIndividual ,
+        :DisjointClasses_Male ,
+        :DisjointClasses_Female .

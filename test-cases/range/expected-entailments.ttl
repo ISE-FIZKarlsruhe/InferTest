@@ -1,0 +1,8 @@
+# InferTest — expected entailments
+# Construct : rdfs:range
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### rangeWorksFor has range Range_Organization -> the object must be typed.
+:Range_Employer01 rdf:type :Range_Organization .

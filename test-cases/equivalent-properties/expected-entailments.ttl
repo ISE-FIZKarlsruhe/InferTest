@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:equivalentProperty
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### hasSpouse and isMarriedTo are equivalent -> the isMarriedTo triple must
+### also hold.
+:EquivalentProperties_Alice :equivalentPropertiesIsMarriedTo :EquivalentProperties_Bob .

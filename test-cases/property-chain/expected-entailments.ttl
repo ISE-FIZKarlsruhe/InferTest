@@ -1,0 +1,8 @@
+# InferTest — expected entailments
+# Construct : owl:propertyChainAxiom
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Sam hasParent Pat, Pat hasBrother Joe -> Sam hasUncle Joe.
+:PropertyChain_Sam :propertyChainHasUncle :PropertyChain_Joe .

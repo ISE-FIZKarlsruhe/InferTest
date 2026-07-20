@@ -1,0 +1,14 @@
+# InferTest — expected entailments
+# Construct : rdfs:subClassOf (class subsumption)
+#
+# These triples MUST be present in the reasoner's inferred closure after
+# loading premises.ttl (optionally merged with your own ontology).
+# The validator (scripts/run_all_tests.py) checks each one individually.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+### Rex is a Dog and Dog is a subclass of Animal -> Rex must be typed Animal.
+:Subclass_Rex rdf:type :Subclass_Animal .

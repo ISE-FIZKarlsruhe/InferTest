@@ -1,0 +1,12 @@
+This test case is expected to make the (merged) ontology INCONSISTENT once
+premises.ttl is loaded and reasoned over. A conformant OWL 2 DL reasoner
+MUST report the ontology as inconsistent.
+
+Construct under test : owl:NegativePropertyAssertion
+Why                   : Alice is positively asserted married to Bob, while
+                        a NegativePropertyAssertion simultaneously denies
+                        that exact same triple.
+
+scripts/run_all_tests.py detects this file and, instead of checking
+expected-entailments.ttl, asserts that reasoning over premises.ttl raises
+an inconsistency.

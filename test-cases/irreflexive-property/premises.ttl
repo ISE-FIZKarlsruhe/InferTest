@@ -1,0 +1,34 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:IrreflexiveProperty
+# File      : premises.ttl
+# Purpose   : Asserting an irreflexive property between an individual and
+#             itself must make the ontology INCONSISTENT.
+#
+# This construct has no positive triple to entail — its correctness can
+# only be checked by confirming a reasoner flags the violation below.
+# See expected-inconsistent.flag instead of expected-entailments.ttl.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/irreflexive-property> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — irreflexive property (owl:IrreflexiveProperty)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:irreflexiveMarriedTo rdf:type owl:ObjectProperty , owl:IrreflexiveProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Violation: an irreflexive property may never relate an individual to
+### itself.
+:IrreflexiveProperty_Alice rdf:type owl:NamedIndividual ;
+    :irreflexiveMarriedTo :IrreflexiveProperty_Alice .

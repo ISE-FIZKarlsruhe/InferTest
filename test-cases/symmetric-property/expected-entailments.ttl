@@ -1,0 +1,8 @@
+# InferTest — expected entailments
+# Construct : owl:SymmetricProperty
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Alice isSiblingOf Bob, and the property is symmetric -> Bob isSiblingOf Alice.
+:SymmetricProperty_Bob :symmetricIsSiblingOf :SymmetricProperty_Alice .

@@ -1,0 +1,38 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:hasKey (OWL 2 new construct)
+# File      : premises.ttl
+# Purpose   : Two individuals of a keyed class that share the same value
+#             for the key property must be entailed identical.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/has-key> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — has key (owl:hasKey)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:HasKey_Person rdf:type owl:Class ;
+    owl:hasKey ( :hasKeyNationalId ) .
+
+#################################################################
+#    Data Properties
+#################################################################
+
+:hasKeyNationalId rdf:type owl:DatatypeProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:HasKey_PersonRecordA rdf:type owl:NamedIndividual , :HasKey_Person ;
+    :hasKeyNationalId "X-123-456"^^xsd:string .
+
+:HasKey_PersonRecordB rdf:type owl:NamedIndividual , :HasKey_Person ;
+    :hasKeyNationalId "X-123-456"^^xsd:string .

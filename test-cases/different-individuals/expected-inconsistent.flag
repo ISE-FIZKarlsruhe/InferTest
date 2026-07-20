@@ -1,0 +1,13 @@
+This test case is expected to make the (merged) ontology INCONSISTENT once
+premises.ttl is loaded and reasoned over. A conformant OWL 2 DL reasoner
+MUST report the ontology as inconsistent.
+
+Construct under test : owl:differentFrom
+Why                   : DifferentIndividuals_A is asserted both owl:sameAs
+                        and owl:differentFrom DifferentIndividuals_B — a
+                        direct contradiction that verifies differentFrom is
+                        actually enforced (not silently ignored).
+
+scripts/run_all_tests.py detects this file and, instead of checking
+expected-entailments.ttl, asserts that reasoning over premises.ttl raises
+an inconsistency.

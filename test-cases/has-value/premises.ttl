@@ -1,0 +1,41 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:hasValue
+# File      : premises.ttl
+# Purpose   : A class defined as equivalent to a hasValue restriction must
+#             entail the corresponding property assertion for its members.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/has-value> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — hasValue" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:HasValue_ApprovedRequest rdf:type owl:Class ;
+    owl:equivalentClass [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasValueStatus ;
+                           owl:hasValue :HasValue_ApprovedStatus
+                         ] .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:hasValueStatus rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:HasValue_ApprovedStatus rdf:type owl:NamedIndividual .
+
+### Req1 is only typed ApprovedRequest — its hasValueStatus assertion must
+### be inferred from the hasValue restriction.
+:HasValue_Req1 rdf:type owl:NamedIndividual , :HasValue_ApprovedRequest .

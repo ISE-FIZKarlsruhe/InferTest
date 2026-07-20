@@ -1,0 +1,44 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:someValuesFrom (existential restriction)
+# File      : premises.ttl
+# Purpose   : A class defined as equivalent to an existential restriction
+#             must be inferred for any individual that satisfies it.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/some-values-from> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — someValuesFrom (existential restriction)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:SomeValuesFrom_Person rdf:type owl:Class .
+
+:SomeValuesFrom_Parent rdf:type owl:Class ;
+    owl:equivalentClass [ rdf:type owl:Restriction ;
+                           owl:onProperty :someValuesFromHasChild ;
+                           owl:someValuesFrom :SomeValuesFrom_Person
+                         ] .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:someValuesFromHasChild rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Pat is not directly typed Parent — that must be inferred because Pat
+### has a child who is a Person.
+:SomeValuesFrom_Pat rdf:type owl:NamedIndividual ;
+    :someValuesFromHasChild :SomeValuesFrom_Sam .
+
+:SomeValuesFrom_Sam rdf:type owl:NamedIndividual , :SomeValuesFrom_Person .

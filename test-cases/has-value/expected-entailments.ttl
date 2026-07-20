@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:hasValue
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Req1 is an ApprovedRequest, equivalent to (hasValueStatus value
+### ApprovedStatus) -> the property assertion must be inferred.
+:HasValue_Req1 :hasValueStatus :HasValue_ApprovedStatus .

@@ -1,0 +1,45 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:allValuesFrom (universal restriction)
+# File      : premises.ttl
+# Purpose   : If a class is subsumed by a universal restriction, every
+#             filler of the restricted property for a member of that class
+#             must be inferred to belong to the restriction's target class.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/all-values-from> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — allValuesFrom (universal restriction)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:AllValuesFrom_Doctor rdf:type owl:Class .
+
+:AllValuesFrom_ProudParent rdf:type owl:Class ;
+    rdfs:subClassOf [ rdf:type owl:Restriction ;
+                       owl:onProperty :allValuesFromHasChild ;
+                       owl:allValuesFrom :AllValuesFrom_Doctor
+                     ] .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:allValuesFromHasChild rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Sam is not directly typed Doctor — that must be inferred because every
+### child of a ProudParent must be a Doctor, and Pat is a ProudParent.
+:AllValuesFrom_Pat rdf:type owl:NamedIndividual , :AllValuesFrom_ProudParent ;
+    :allValuesFromHasChild :AllValuesFrom_Sam .
+
+:AllValuesFrom_Sam rdf:type owl:NamedIndividual .

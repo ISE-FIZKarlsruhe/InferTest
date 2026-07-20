@@ -1,0 +1,43 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:NegativePropertyAssertion (OWL 2 new construct)
+# File      : premises.ttl
+# Purpose   : Asserting a triple positively and simultaneously declaring a
+#             negative property assertion for the same triple must make
+#             the ontology INCONSISTENT.
+#
+# See expected-inconsistent.flag instead of expected-entailments.ttl.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/negative-property-assertion> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — negative property assertion (owl:NegativePropertyAssertion)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:negativePropertyAssertionMarriedTo rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:NegativePropertyAssertion_Alice rdf:type owl:NamedIndividual ;
+    :negativePropertyAssertionMarriedTo :NegativePropertyAssertion_Bob .
+
+:NegativePropertyAssertion_Bob rdf:type owl:NamedIndividual .
+
+#################################################################
+#    Negative Property Assertion
+#################################################################
+
+### Violation: the same triple is asserted true above and false here.
+[] rdf:type owl:NegativePropertyAssertion ;
+    owl:sourceIndividual :NegativePropertyAssertion_Alice ;
+    owl:assertionProperty :negativePropertyAssertionMarriedTo ;
+    owl:targetIndividual :NegativePropertyAssertion_Bob .

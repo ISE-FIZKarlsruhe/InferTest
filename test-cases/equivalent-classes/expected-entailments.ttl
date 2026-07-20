@@ -1,0 +1,8 @@
+# InferTest — expected entailments
+# Construct : owl:equivalentClass
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Alex is a Human, and Human is equivalent to Person -> Alex must be a Person.
+:EquivalentClasses_Alex rdf:type :EquivalentClasses_Person .

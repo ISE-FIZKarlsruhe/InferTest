@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : ObjectPropertyAssertion
+#
+# Trivial by design: the asserted triple must simply still be there after
+# your ontology merge + reasoning pipeline.
+
+@prefix : <http://example.org/infertest#> .
+
+:ObjectPropertyAssertion_Alice :objectPropertyAssertionKnows :ObjectPropertyAssertion_Bob .

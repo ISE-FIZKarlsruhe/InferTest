@@ -1,0 +1,35 @@
+# InferTest — OWL 2 construct test case
+# Construct : rdfs:subClassOf (class subsumption)
+# File      : premises.ttl
+# Purpose   : A reasoner must propagate class membership up a subclass hierarchy.
+#
+# This is a self-contained OWL 2 ontology module. Merge or import it into a
+# target ontology, run any OWL 2 DL reasoner over the result, then check
+# expected-entailments.ttl for the triples the reasoner must produce.
+# See the repository README for the full workflow.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/subclass> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — subclass (rdfs:subClassOf)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:Subclass_Animal rdf:type owl:Class .
+
+:Subclass_Dog rdf:type owl:Class ;
+    rdfs:subClassOf :Subclass_Animal .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Rex is only ever asserted as a Dog — membership in Animal must be inferred.
+:Subclass_Rex rdf:type owl:NamedIndividual , :Subclass_Dog .

@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:allValuesFrom (universal restriction)
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Pat is a ProudParent (every child must be a Doctor) and has child Sam
+### -> Sam must be typed Doctor.
+:AllValuesFrom_Sam rdf:type :AllValuesFrom_Doctor .

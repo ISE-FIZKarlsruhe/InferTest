@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:FunctionalProperty
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+### functionalHasBirthMother is functional and Tom has two asserted
+### mothers -> those two individuals must be inferred identical.
+:FunctionalProperty_MotherA owl:sameAs :FunctionalProperty_MotherB .

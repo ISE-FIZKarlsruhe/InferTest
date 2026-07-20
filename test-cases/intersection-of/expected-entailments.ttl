@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:intersectionOf (class intersection)
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Jane is both a Worker and a Parent, and WorkingParent is their
+### intersection -> Jane must be typed WorkingParent.
+:IntersectionOf_Jane rdf:type :IntersectionOf_WorkingParent .

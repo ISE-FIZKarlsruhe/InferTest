@@ -1,0 +1,33 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:equivalentProperty
+# File      : premises.ttl
+# Purpose   : An assertion made through one of two equivalent properties
+#             must entail the same assertion through the other.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/equivalent-properties> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — equivalent properties (owl:equivalentProperty)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:equivalentPropertiesHasSpouse rdf:type owl:ObjectProperty ;
+    owl:equivalentProperty :equivalentPropertiesIsMarriedTo .
+
+:equivalentPropertiesIsMarriedTo rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:EquivalentProperties_Alice rdf:type owl:NamedIndividual ;
+    :equivalentPropertiesHasSpouse :EquivalentProperties_Bob .
+
+:EquivalentProperties_Bob rdf:type owl:NamedIndividual .

@@ -1,0 +1,39 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:hasSelf (local reflexivity restriction, OWL 2 new construct)
+# File      : premises.ttl
+# Purpose   : A class equivalent to a hasSelf restriction must entail the
+#             self-referencing property assertion for its members.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/self-restriction> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — self restriction (owl:hasSelf)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:SelfRestriction_Narcissist rdf:type owl:Class ;
+    owl:equivalentClass [ rdf:type owl:Restriction ;
+                           owl:onProperty :selfRestrictionLikes ;
+                           owl:hasSelf "true"^^xsd:boolean
+                         ] .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:selfRestrictionLikes rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Alex is only typed Narcissist — the self-relationship must be inferred
+### from the hasSelf restriction.
+:SelfRestriction_Alex rdf:type owl:NamedIndividual , :SelfRestriction_Narcissist .

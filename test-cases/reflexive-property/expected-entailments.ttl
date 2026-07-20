@@ -1,0 +1,8 @@
+# InferTest — expected entailments
+# Construct : owl:ReflexiveProperty
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### reflexiveConnectedTo is reflexive -> every individual relates to itself.
+:ReflexiveProperty_NodeA :reflexiveConnectedTo :ReflexiveProperty_NodeA .

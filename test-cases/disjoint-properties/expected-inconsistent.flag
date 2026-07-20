@@ -1,0 +1,12 @@
+This test case is expected to make the (merged) ontology INCONSISTENT once
+premises.ttl is loaded and reasoned over. A conformant OWL 2 DL reasoner
+MUST report the ontology as inconsistent.
+
+Construct under test : owl:propertyDisjointWith
+Why                   : disjointPropertiesHasSpouse and
+                        disjointPropertiesHasSibling are declared disjoint,
+                        but Alice and Bob are related by both.
+
+scripts/run_all_tests.py detects this file and, instead of checking
+expected-entailments.ttl, asserts that reasoning over premises.ttl raises
+an inconsistency.

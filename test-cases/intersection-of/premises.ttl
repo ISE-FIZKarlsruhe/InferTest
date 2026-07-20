@@ -1,0 +1,38 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:intersectionOf (class intersection)
+# File      : premises.ttl
+# Purpose   : Membership in every conjunct of an intersection class must
+#             entail membership in the intersection class itself.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/intersection-of> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — intersection of classes (owl:intersectionOf)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:IntersectionOf_Worker rdf:type owl:Class .
+
+:IntersectionOf_Parent rdf:type owl:Class .
+
+:IntersectionOf_WorkingParent rdf:type owl:Class ;
+    owl:equivalentClass [ rdf:type owl:Class ;
+                           owl:intersectionOf ( :IntersectionOf_Worker :IntersectionOf_Parent )
+                         ] .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Jane is typed both Worker and Parent, but never directly WorkingParent
+### — that must be inferred.
+:IntersectionOf_Jane rdf:type owl:NamedIndividual ,
+        :IntersectionOf_Worker ,
+        :IntersectionOf_Parent .

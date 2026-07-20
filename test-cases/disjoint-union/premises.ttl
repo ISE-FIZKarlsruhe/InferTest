@@ -1,0 +1,42 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:disjointUnionOf (OWL 2 new construct)
+# File      : premises.ttl
+# Purpose   : disjointUnionOf both (a) defines a class as the union of its
+#             parts and (b) makes those parts pairwise disjoint. This test
+#             targets the disjointness half: an individual typed as two of
+#             the union's parts must make the ontology INCONSISTENT.
+#             (The union/subsumption half is already covered by the
+#             union-of test case.)
+#
+# See expected-inconsistent.flag instead of expected-entailments.ttl.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/disjoint-union> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — disjoint union (owl:disjointUnionOf)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:DisjointUnion_Person rdf:type owl:Class ;
+    owl:disjointUnionOf ( :DisjointUnion_Man :DisjointUnion_Woman ) .
+
+:DisjointUnion_Man rdf:type owl:Class .
+
+:DisjointUnion_Woman rdf:type owl:Class .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Violation: the disjoint union of Man and Woman forces them to be
+### pairwise disjoint, so Sam cannot be both.
+:DisjointUnion_Sam rdf:type owl:NamedIndividual ,
+        :DisjointUnion_Man ,
+        :DisjointUnion_Woman .

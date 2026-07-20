@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:InverseFunctionalProperty
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+### Alice and Bob share the same passport number through an inverse-
+### functional property -> they must be inferred identical.
+:InverseFunctionalProperty_Alice owl:sameAs :InverseFunctionalProperty_Bob .

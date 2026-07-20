@@ -1,0 +1,36 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:unionOf (class union)
+# File      : premises.ttl
+# Purpose   : Membership in any disjunct of a union class must entail
+#             membership in the union class itself.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/union-of> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — union of classes (owl:unionOf)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:UnionOf_Car rdf:type owl:Class .
+
+:UnionOf_Truck rdf:type owl:Class .
+
+:UnionOf_Vehicle rdf:type owl:Class ;
+    owl:equivalentClass [ rdf:type owl:Class ;
+                           owl:unionOf ( :UnionOf_Car :UnionOf_Truck )
+                         ] .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### MyCar is only typed Car — Vehicle membership must be inferred from the
+### union definition.
+:UnionOf_MyCar rdf:type owl:NamedIndividual , :UnionOf_Car .

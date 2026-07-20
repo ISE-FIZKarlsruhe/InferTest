@@ -1,0 +1,8 @@
+# rdflib is all you need for prepare_test_ontology.py and validate_entailments.py
+# (the pipeline-friendly, reasoner-agnostic option).
+rdflib>=7.0
+
+# owlready2 is only needed for run_all_tests.py, the standalone option that
+# bundles its own reasoner. It drives the HermiT/Pellet jars via Java, so a
+# Java runtime (JRE/JDK 8+) must also be available on PATH.
+owlready2>=0.46

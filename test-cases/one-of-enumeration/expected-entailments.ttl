@@ -1,0 +1,13 @@
+# InferTest — expected entailments
+# Construct : owl:oneOf (class enumeration)
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Each enumerated individual must be typed as a member of the enumerated
+### class.
+:OneOfEnumeration_Monday rdf:type :OneOfEnumeration_Weekday .
+
+:OneOfEnumeration_Tuesday rdf:type :OneOfEnumeration_Weekday .
+
+:OneOfEnumeration_Wednesday rdf:type :OneOfEnumeration_Weekday .

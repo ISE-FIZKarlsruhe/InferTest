@@ -1,0 +1,46 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:maxQualifiedCardinality (OWL 2 new construct)
+# File      : premises.ttl
+# Purpose   : Like unqualified cardinality, but the restriction only counts
+#             fillers belonging to a specific class (owl:onClass). Two
+#             qualifying fillers beyond the max must be entailed identical.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/qualified-cardinality> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — qualified cardinality (owl:maxQualifiedCardinality)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:QualifiedCardinality_SteeringWheel rdf:type owl:Class .
+
+:QualifiedCardinality_Car rdf:type owl:Class ;
+    rdfs:subClassOf [ rdf:type owl:Restriction ;
+                       owl:onProperty :qualifiedCardinalityHasWheel ;
+                       owl:onClass :QualifiedCardinality_SteeringWheel ;
+                       owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger
+                     ] .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:qualifiedCardinalityHasWheel rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:QualifiedCardinality_MyCar rdf:type owl:NamedIndividual , :QualifiedCardinality_Car ;
+    :qualifiedCardinalityHasWheel :QualifiedCardinality_WheelA , :QualifiedCardinality_WheelB .
+
+:QualifiedCardinality_WheelA rdf:type owl:NamedIndividual , :QualifiedCardinality_SteeringWheel .
+
+:QualifiedCardinality_WheelB rdf:type owl:NamedIndividual , :QualifiedCardinality_SteeringWheel .

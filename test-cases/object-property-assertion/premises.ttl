@@ -1,0 +1,33 @@
+# InferTest — OWL 2 construct test case
+# Construct : ObjectPropertyAssertion
+# File      : premises.ttl
+# Purpose   : Baseline sanity check — a plain object-property assertion
+#             between two individuals must survive being merged into a
+#             target ontology and passed through a pipeline unchanged.
+#             No inference is required; this catches a broken
+#             merge/import/reasoning step early.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/object-property-assertion> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — object property assertion (ObjectPropertyAssertion)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:objectPropertyAssertionKnows rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:ObjectPropertyAssertion_Alice rdf:type owl:NamedIndividual ;
+    :objectPropertyAssertionKnows :ObjectPropertyAssertion_Bob .
+
+:ObjectPropertyAssertion_Bob rdf:type owl:NamedIndividual .

@@ -1,0 +1,11 @@
+# InferTest — expected entailments
+# Construct : DataPropertyAssertion
+#
+# Trivial by design: the asserted triple (including its literal value and
+# datatype) must simply still be there after your ontology merge +
+# reasoning pipeline.
+
+@prefix : <http://example.org/infertest#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:DataPropertyAssertion_Alice :dataPropertyAssertionHasAge "42"^^xsd:integer .

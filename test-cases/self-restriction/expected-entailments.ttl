@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:hasSelf
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Alex is a Narcissist, equivalent to (selfRestrictionLikes hasSelf true)
+### -> Alex must like himself.
+:SelfRestriction_Alex :selfRestrictionLikes :SelfRestriction_Alex .

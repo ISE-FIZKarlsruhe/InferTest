@@ -1,0 +1,36 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:InverseFunctionalProperty
+# File      : premises.ttl
+# Purpose   : If two distinct subjects share the same filler through an
+#             inverse-functional property, those subjects must be entailed
+#             to be the same individual.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/inverse-functional-property> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — inverse-functional property (owl:InverseFunctionalProperty)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+### OWL 2 DL requires InverseFunctionalProperty to be an object property,
+### so the passport number is modelled as an individual, not a literal.
+:inverseFunctionalHasPassportNumber rdf:type owl:ObjectProperty , owl:InverseFunctionalProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:InverseFunctionalProperty_Alice rdf:type owl:NamedIndividual ;
+    :inverseFunctionalHasPassportNumber :InverseFunctionalProperty_Number123 .
+
+:InverseFunctionalProperty_Bob rdf:type owl:NamedIndividual ;
+    :inverseFunctionalHasPassportNumber :InverseFunctionalProperty_Number123 .
+
+:InverseFunctionalProperty_Number123 rdf:type owl:NamedIndividual .

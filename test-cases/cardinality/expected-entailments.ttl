@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:maxCardinality (unqualified cardinality restriction)
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+### Tom is a Person (max 1 birth mother) with two asserted mothers -> they
+### must be inferred identical.
+:Cardinality_MotherA owl:sameAs :Cardinality_MotherB .

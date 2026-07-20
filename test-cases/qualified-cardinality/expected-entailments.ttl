@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:maxQualifiedCardinality
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+### MyCar allows at most 1 SteeringWheel-typed wheel, but has two asserted
+### -> WheelA and WheelB must be inferred identical.
+:QualifiedCardinality_WheelA owl:sameAs :QualifiedCardinality_WheelB .

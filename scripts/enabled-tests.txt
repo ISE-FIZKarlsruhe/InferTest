@@ -1,0 +1,55 @@
+# InferTest — enabled test cases
+#
+# One construct name per line. A line is ENABLED unless it starts with '#'.
+# prepare_test_ontology.py, validate_entailments.py and run_all_tests.py
+# all read this same file by default, so this is the one place to control
+# which constructs are part of your pipeline.
+#
+# Start small, then uncomment more constructs as you need them — each one
+# is an independent test case under test-cases/<name>/, so enabling one
+# never affects another.
+
+subclass
+subproperty
+inverse-properties
+class-assertion
+object-property-assertion
+data-property-assertion
+
+# --- everything below is available, just not enabled yet ---
+
+# domain
+# range
+# equivalent-classes
+# equivalent-properties
+# symmetric-property
+# transitive-property
+# reflexive-property
+# functional-property
+# inverse-functional-property
+# property-chain
+# some-values-from
+# all-values-from
+# has-value
+# cardinality
+# qualified-cardinality
+# one-of-enumeration
+# union-of
+# intersection-of
+# same-individual
+# has-key
+# self-restriction
+
+# --- these constructs are violation/consistency tests, not entailment ---
+# --- tests: enabling them produces a SEPARATE "should be inconsistent" ---
+# --- file per construct instead of adding to the main merged ontology  ---
+# --- (see README) ---
+
+# irreflexive-property
+# asymmetric-property
+# disjoint-classes
+# disjoint-properties
+# disjoint-union
+# complement-of
+# different-individuals
+# negative-property-assertion

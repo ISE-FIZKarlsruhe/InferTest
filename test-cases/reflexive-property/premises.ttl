@@ -1,0 +1,29 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:ReflexiveProperty
+# File      : premises.ttl
+# Purpose   : A reflexive property must hold between every named individual
+#             and itself, with no explicit assertion required.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/reflexive-property> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — reflexive property (owl:ReflexiveProperty)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:reflexiveConnectedTo rdf:type owl:ObjectProperty , owl:ReflexiveProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### No relationship is asserted for NodeA — the self-loop must be inferred
+### purely from the ReflexiveProperty characteristic.
+:ReflexiveProperty_NodeA rdf:type owl:NamedIndividual .

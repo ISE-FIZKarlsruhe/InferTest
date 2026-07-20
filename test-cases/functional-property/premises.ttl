@@ -1,0 +1,33 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:FunctionalProperty
+# File      : premises.ttl
+# Purpose   : If a functional property relates one subject to two distinct
+#             fillers, those fillers must be entailed to be the same
+#             individual.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/functional-property> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — functional property (owl:FunctionalProperty)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:functionalHasBirthMother rdf:type owl:ObjectProperty , owl:FunctionalProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:FunctionalProperty_Tom rdf:type owl:NamedIndividual ;
+    :functionalHasBirthMother :FunctionalProperty_MotherA , :FunctionalProperty_MotherB .
+
+:FunctionalProperty_MotherA rdf:type owl:NamedIndividual .
+
+:FunctionalProperty_MotherB rdf:type owl:NamedIndividual .

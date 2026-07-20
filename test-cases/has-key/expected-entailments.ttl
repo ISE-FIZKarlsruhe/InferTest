@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:hasKey
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+### PersonRecordA and PersonRecordB are both Persons sharing the same key
+### value (hasKeyNationalId) -> they must be inferred identical.
+:HasKey_PersonRecordA owl:sameAs :HasKey_PersonRecordB .

@@ -1,0 +1,38 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:oneOf (class enumeration)
+# File      : premises.ttl
+# Purpose   : A class defined by enumeration must entail class membership
+#             for each named individual in the enumeration.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/one-of-enumeration> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — one-of enumeration (owl:oneOf)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:OneOfEnumeration_Weekday rdf:type owl:Class ;
+    owl:equivalentClass [ rdf:type owl:Class ;
+                           owl:oneOf ( :OneOfEnumeration_Monday
+                                       :OneOfEnumeration_Tuesday
+                                       :OneOfEnumeration_Wednesday )
+                         ] .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### None of the three days is directly typed Weekday — that must be
+### inferred purely from enumeration membership.
+:OneOfEnumeration_Monday rdf:type owl:NamedIndividual .
+
+:OneOfEnumeration_Tuesday rdf:type owl:NamedIndividual .
+
+:OneOfEnumeration_Wednesday rdf:type owl:NamedIndividual .

@@ -1,0 +1,31 @@
+# InferTest — OWL 2 construct test case
+# Construct : ClassAssertion (owl:NamedIndividual rdf:type owl:Class)
+# File      : premises.ttl
+# Purpose   : Baseline sanity check — a plain class-membership assertion
+#             must survive being merged into a target ontology and passed
+#             through a pipeline unchanged. This is not really "reasoning"
+#             (no new fact is derived); it exists to catch a broken
+#             merge/import/reasoning step before you bother debugging the
+#             more interesting inference-based test cases.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/class-assertion> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — class assertion (ClassAssertion)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:ClassAssertion_Widget rdf:type owl:Class .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:ClassAssertion_Item01 rdf:type owl:NamedIndividual , :ClassAssertion_Widget .

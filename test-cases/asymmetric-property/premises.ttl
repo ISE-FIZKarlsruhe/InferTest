@@ -1,0 +1,35 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:AsymmetricProperty
+# File      : premises.ttl
+# Purpose   : Asserting an asymmetric property in both directions between
+#             two individuals must make the ontology INCONSISTENT.
+#
+# See expected-inconsistent.flag instead of expected-entailments.ttl.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/asymmetric-property> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — asymmetric property (owl:AsymmetricProperty)" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:asymmetricParentOf rdf:type owl:ObjectProperty , owl:AsymmetricProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+### Violation: an asymmetric property cannot hold in both directions
+### between the same pair of individuals.
+:AsymmetricProperty_Alice rdf:type owl:NamedIndividual ;
+    :asymmetricParentOf :AsymmetricProperty_Bob .
+
+:AsymmetricProperty_Bob rdf:type owl:NamedIndividual ;
+    :asymmetricParentOf :AsymmetricProperty_Alice .

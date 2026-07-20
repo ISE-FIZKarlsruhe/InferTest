@@ -1,0 +1,8 @@
+# InferTest — expected entailments
+# Construct : rdfs:domain
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### domainWorksFor has domain Domain_Person -> the subject must be typed.
+:Domain_Employee01 rdf:type :Domain_Person .

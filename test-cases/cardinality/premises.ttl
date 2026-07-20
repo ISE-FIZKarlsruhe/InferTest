@@ -1,0 +1,43 @@
+# InferTest — OWL 2 construct test case
+# Construct : owl:maxCardinality (unqualified cardinality restriction)
+# File      : premises.ttl
+# Purpose   : If a class restricts a property to at most one filler, and a
+#             member of that class has two asserted fillers, those fillers
+#             must be entailed identical.
+
+@prefix : <http://example.org/infertest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@base <http://example.org/infertest> .
+
+<http://example.org/infertest/cardinality> rdf:type owl:Ontology ;
+    rdfs:label "InferTest — cardinality (owl:maxCardinality)" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:Cardinality_Person rdf:type owl:Class ;
+    rdfs:subClassOf [ rdf:type owl:Restriction ;
+                       owl:onProperty :cardinalityHasBirthMother ;
+                       owl:maxCardinality "1"^^xsd:nonNegativeInteger
+                     ] .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:cardinalityHasBirthMother rdf:type owl:ObjectProperty .
+
+#################################################################
+#    Individuals
+#################################################################
+
+:Cardinality_Tom rdf:type owl:NamedIndividual , :Cardinality_Person ;
+    :cardinalityHasBirthMother :Cardinality_MotherA , :Cardinality_MotherB .
+
+:Cardinality_MotherA rdf:type owl:NamedIndividual .
+
+:Cardinality_MotherB rdf:type owl:NamedIndividual .

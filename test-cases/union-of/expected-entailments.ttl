@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:unionOf (class union)
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### MyCar is a Car, and Vehicle is the union of Car and Truck -> MyCar must
+### be typed Vehicle.
+:UnionOf_MyCar rdf:type :UnionOf_Vehicle .

@@ -1,0 +1,9 @@
+# InferTest — expected entailments
+# Construct : owl:someValuesFrom (existential restriction)
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+### Pat has a child (Sam) who is a Person -> Pat satisfies the existential
+### restriction and must be typed Parent.
+:SomeValuesFrom_Pat rdf:type :SomeValuesFrom_Parent .

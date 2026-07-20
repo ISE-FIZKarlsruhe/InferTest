@@ -1,0 +1,11 @@
+# InferTest — expected entailments
+# Construct : ClassAssertion
+#
+# Trivial by design: the asserted triple must simply still be there after
+# your ontology merge + reasoning pipeline. If this one fails, the problem
+# is in your pipeline plumbing, not your reasoner's inference logic.
+
+@prefix : <http://example.org/infertest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+:ClassAssertion_Item01 rdf:type :ClassAssertion_Widget .

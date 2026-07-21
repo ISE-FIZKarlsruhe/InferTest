@@ -10,12 +10,13 @@ If you want to plug InferTest into your OWN pipeline / reasoner instead,
 use prepare_test_ontology.py + validate_entailments.py — those never run a
 reasoner themselves and have no Java dependency.
 
-  * Construct folders containing expected-entailments.ttl are ENTAILMENT
-    tests: every triple in that file must be entailed by premises.ttl.
+Every construct folder under test-cases/ contains an expected-entailments.ttl:
+every triple in that file must be entailed by premises.ttl.
 
-  * Construct folders containing expected-inconsistent.flag are
-    CONSISTENCY tests: reasoning over premises.ttl must make the ontology
-    inconsistent.
+Note: a separate set of inconsistency/violation-style constructs
+(asymmetric-property, disjoint-classes, ...) lives under
+inconsistency-test-cases/ and is intentionally not wired into this script
+for now.
 
 How entailment is checked
 --------------------------
@@ -36,6 +37,11 @@ INCONSISTENT. This only depends on the reasoner's consistency check, which
 every OWL 2 DL reasoner implements and which owlready2 reports reliably via
 OwlReadyInconsistentOntologyError — so it works regardless of what a given
 reasoner's CLI chooses to print.
+
+If the reasoner fails for some OTHER reason (a Java crash, a parsing
+error, an unsupported construct) rather than giving a definite
+consistent/inconsistent answer, that construct is reported as ERROR, not
+silently counted as PASS or FAIL.
 
 Usage:
     python run_all_tests.py                          # runs enabled-tests.txt selection
@@ -81,24 +87,44 @@ except ImportError:
     sys.exit(2)
 
 
+class ReasonerFailure(Exception):
+    """Raised when the reasoner fails for a reason OTHER than a genuine
+    logical inconsistency — a Java crash, a parsing error, an unsupported
+    construct, a timeout, etc. Kept distinct from
+    OwlReadyInconsistentOntologyError so a broken/crashed reasoner run is
+    never silently counted as either PASS or FAIL: it's reported as its own
+    ERROR status instead of masquerading as a real result, and it never
+    takes down the rest of the run.
+
+    This is a meaningful three-way split, not just defensive
+    over-engineering: OWL 2 DL is decidable, so a correct reasoner given a
+    syntactically valid OWL 2 DL ontology is guaranteed to terminate with a
+    definite consistent/inconsistent verdict. A crash instead of a verdict
+    therefore signals a *different* kind of problem (bad input, a reasoner
+    bug, resource limits) that deserves its own visible status rather than
+    being swallowed into "this construct behaved unexpectedly"."""
+
+
 def is_inconsistent(graph: rdflib.Graph, reasoner: str, debug: int) -> bool:
     """Load an rdflib graph into a fresh, isolated owlready2 World and run
     the reasoner. Returns True iff the reasoner reports the ontology
-    inconsistent."""
-    world = World()
-    onto = world.get_ontology("http://infertest.invalid/run")
-
-    buffer = io.BytesIO(graph.serialize(format="nt", encoding="utf-8"))
-    buffer.name = "<infertest-merged-graph>"
-    onto.load(fileobj=buffer, format="ntriples")
-
+    inconsistent; raises ReasonerFailure if the reasoner itself broke."""
     try:
+        world = World()
+        onto = world.get_ontology("http://infertest.invalid/run")
+
+        buffer = io.BytesIO(graph.serialize(format="nt", encoding="utf-8"))
+        buffer.name = "<infertest-merged-graph>"
+        onto.load(fileobj=buffer, format="ntriples")
+
         if reasoner == "pellet":
             sync_reasoner_pellet(world, debug=debug)
         else:
             sync_reasoner(world, debug=debug)
     except OwlReadyInconsistentOntologyError:
         return True
+    except owlready2.base.OwlReadyError as e:
+        raise ReasonerFailure(str(e)) from e
     return False
 
 
@@ -125,46 +151,48 @@ def negate_triple(graph: rdflib.Graph, s, p, o):
 
 
 def run_case(name: str, target: Path | None, reasoner: str, debug: int):
+    """Returns (name, status, details) where status is 'PASS', 'FAIL', or
+    'ERROR' — ERROR meaning the reasoner itself broke (see ReasonerFailure)
+    rather than gave a definite consistent/inconsistent answer."""
     case_dir = lib.construct_dir(name)
-    is_inconsistency_test = lib.is_inconsistency_construct(name)
     entailments_path = case_dir / lib.ENTAILMENTS_FILE
 
-    if not is_inconsistency_test and not entailments_path.exists():
-        return name, False, [f"no {lib.ENTAILMENTS_FILE} or {lib.INCONSISTENT_FLAG} found"]
+    if not entailments_path.exists():
+        return name, "ERROR", [f"no {lib.ENTAILMENTS_FILE} found"]
 
     graphs = [lib.parse_rdf_file(case_dir / lib.PREMISES_FILE)]
     if target is not None:
         graphs.append(lib.parse_rdf_file(target))
     base_graph = lib.merge_graphs(graphs)
 
-    if is_inconsistency_test:
+    try:
+        # Sanity check: the premises themselves (optionally + --target) must
+        # be consistent before we can meaningfully test entailments against
+        # them.
         if is_inconsistent(base_graph, reasoner, debug):
-            return name, True, []
-        return name, False, ["reasoner reported the ontology CONSISTENT, but this "
-                              "construct was expected to trigger an inconsistency"]
+            return name, "FAIL", ["premises.ttl (merged with --target, if given) is already "
+                                   "INCONSISTENT on its own — this construct expects clean "
+                                   "entailments, not a contradiction"]
 
-    # Sanity check: the premises themselves (optionally + --target) must be
-    # consistent before we can meaningfully test entailments against them.
-    if is_inconsistent(base_graph, reasoner, debug):
-        return name, False, ["premises.ttl (merged with --target, if given) is already "
-                              "INCONSISTENT on its own — this construct expects clean "
-                              "entailments, not a contradiction"]
+        expected_graph = lib.parse_rdf_file(entailments_path)
+        skip = lib.ontology_declaration_triples(expected_graph)
 
-    expected_graph = lib.parse_rdf_file(entailments_path)
-    skip = lib.ontology_declaration_triples(expected_graph)
-
-    missing = []
-    for s, p, o in expected_graph:
-        if (s, p, o) in skip:
-            continue
-        refuted_graph = lib.merge_graphs([base_graph])
-        negate_triple(refuted_graph, s, p, o)
-        if not is_inconsistent(refuted_graph, reasoner, debug):
-            missing.append((s, p, o))
+        missing = []
+        for s, p, o in expected_graph:
+            if (s, p, o) in skip:
+                continue
+            refuted_graph = lib.merge_graphs([base_graph])
+            negate_triple(refuted_graph, s, p, o)
+            if not is_inconsistent(refuted_graph, reasoner, debug):
+                missing.append((s, p, o))
+    except ReasonerFailure as e:
+        return name, "ERROR", [f"reasoner did not return a definite answer: {e}",
+                                "(this is neither a confirmed pass nor a confirmed fail — "
+                                "rerun with --verbose to see the reasoner's own output)"]
 
     if missing:
-        return name, False, [f"not entailed: {lib.format_triple(t)}" for t in missing]
-    return name, True, []
+        return name, "FAIL", [f"not entailed: {lib.format_triple(t)}" for t in missing]
+    return name, "PASS", []
 
 
 def main():
@@ -219,23 +247,30 @@ def main():
         print(f"Merging each test case against target ontology: {args.target}")
     print()
 
+    STATUS_COLOUR = {"PASS": lib.GREEN, "FAIL": lib.RED, "ERROR": lib.CYAN}
+
     results = []
     for name in names:
-        passed_result = run_case(name, args.target, args.reasoner, debug)
-        results.append(passed_result)
-        name, passed, details = passed_result
-        status = lib.colour("PASS", lib.GREEN) if passed else lib.colour("FAIL", lib.RED)
-        print(f"[{status}] {name}")
+        result = run_case(name, args.target, args.reasoner, debug)
+        results.append(result)
+        name, status, details = result
+        print(f"[{lib.colour(status, STATUS_COLOUR[status])}] {name}")
         for line in details:
-            print(f"       {lib.colour(line, lib.YELLOW if passed else lib.RED)}")
+            print(f"       {lib.colour(line, STATUS_COLOUR[status])}")
 
     print()
     total = len(results)
-    passed_count = sum(1 for _, p, _ in results if p)
-    failed = [name for name, p, _ in results if not p]
+    passed_count = sum(1 for _, status, _ in results if status == "PASS")
+    failed = [name for name, status, _ in results if status == "FAIL"]
+    errored = [name for name, status, _ in results if status == "ERROR"]
 
-    if failed:
-        print(lib.colour(f"{passed_count}/{total} passed. FAILED: {', '.join(failed)}", lib.RED + lib.BOLD))
+    if failed or errored:
+        summary = f"{passed_count}/{total} passed."
+        if failed:
+            summary += f" FAILED: {', '.join(failed)}."
+        if errored:
+            summary += f" ERRORED (no definite answer — investigate, don't treat as pass or fail): {', '.join(errored)}."
+        print(lib.colour(summary, lib.RED + lib.BOLD))
         sys.exit(1)
     else:
         print(lib.colour(f"{passed_count}/{total} passed. All selected OWL 2 construct tests PASSED.",

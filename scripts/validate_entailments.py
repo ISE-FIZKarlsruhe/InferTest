@@ -3,23 +3,16 @@
 InferTest — pipeline step 2: validate expected entailments.
 
 Point this at the ontology file YOUR OWN reasoner produced after being run
-over the file(s) prepare_test_ontology.py wrote (i.e. the materialised /
+over the file prepare_test_ontology.py wrote (i.e. the materialised /
 inferred ontology — Turtle, RDF/XML, N-Triples, whatever your pipeline
-outputs). For every ENABLED entailment-style construct (see
-enabled-tests.txt), this checks that every triple in its
-expected-entailments.ttl is actually present in that file.
+outputs). For every ENABLED construct (see enabled-tests.txt), this checks
+that every triple in its expected-entailments.ttl is actually present in
+that file.
 
 This script never runs a reasoner itself — it is a pure triple-membership
 check via rdflib — so it works no matter what reasoner produced the
 inferred ontology (HermiT, Pellet, ELK, JFact, a SPARQL-based engine, a
 triplestore's built-in reasoner, ...).
-
-Inconsistency-style constructs (asymmetric-property, disjoint-classes,
-...) are NOT checked here — there is no positive triple to look for when
-an ontology is inconsistent, and most reasoners refuse to even produce
-output for one. Verify those by confirming your reasoner's run over each
-*-expect-inconsistent file (from prepare_test_ontology.py) failed / was
-reported inconsistent by your pipeline.
 
 Usage:
     python validate_entailments.py --inferred /path/to/reasoned-ontology.ttl
@@ -83,25 +76,17 @@ def main():
             print(f"ERROR: {e}")
             sys.exit(2)
 
-    entailment_constructs = [c for c in enabled if lib.is_entailment_construct(c)]
-    skipped_inconsistency = [c for c in enabled if lib.is_inconsistency_construct(c)]
-
-    if not entailment_constructs and not skipped_inconsistency:
+    if not enabled:
         print("No constructs enabled — nothing to validate.")
         sys.exit(2)
 
-    print(lib.colour(f"InferTest — validating {len(entailment_constructs)} entailment-based "
-                      f"construct(s) against {args.inferred}", lib.BOLD))
-    if skipped_inconsistency:
-        print(f"(skipping {len(skipped_inconsistency)} inconsistency-style construct(s) — "
-              f"verify those via your reasoner's own exit status/log instead: "
-              f"{', '.join(skipped_inconsistency)})")
+    print(lib.colour(f"InferTest — validating {len(enabled)} construct(s) against {args.inferred}", lib.BOLD))
     print()
 
     inferred_graph = lib.parse_rdf_file(args.inferred)
 
     results = []
-    for name in entailment_constructs:
+    for name in enabled:
         missing = check_construct(name, inferred_graph)
         passed = not missing
         results.append((name, passed))

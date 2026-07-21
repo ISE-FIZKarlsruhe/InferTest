@@ -17,7 +17,6 @@ DEFAULT_CONFIG = Path(__file__).resolve().parent / "enabled-tests.txt"
 
 PREMISES_FILE = "premises.ttl"
 ENTAILMENTS_FILE = "expected-entailments.ttl"
-INCONSISTENT_FLAG = "expected-inconsistent.flag"
 
 
 def discover_all_constructs():
@@ -75,10 +74,6 @@ def is_entailment_construct(name: str) -> bool:
     return (construct_dir(name) / ENTAILMENTS_FILE).exists()
 
 
-def is_inconsistency_construct(name: str) -> bool:
-    return (construct_dir(name) / INCONSISTENT_FLAG).exists()
-
-
 def parse_rdf_file(path: Path) -> rdflib.Graph:
     """Parse a Turtle, RDF/XML, N-Triples, etc. file (format guessed from
     its extension)."""
@@ -119,6 +114,7 @@ RESET = "\033[0m"
 GREEN = "\033[32m"
 RED = "\033[31m"
 YELLOW = "\033[33m"
+CYAN = "\033[36m"
 BOLD = "\033[1m"
 
 

@@ -8,6 +8,10 @@
 # Start small, then uncomment more constructs as you need them — each one
 # is an independent test case under test-cases/<name>/, so enabling one
 # never affects another.
+#
+# Note: inconsistency/violation-style constructs (asymmetric-property,
+# disjoint-classes, ...) currently live under inconsistency-test-cases/
+# instead of test-cases/, and aren't wired into these scripts for now.
 
 subclass
 subproperty
@@ -39,17 +43,3 @@ data-property-assertion
 # same-individual
 # has-key
 # self-restriction
-
-# --- these constructs are violation/consistency tests, not entailment ---
-# --- tests: enabling them produces a SEPARATE "should be inconsistent" ---
-# --- file per construct instead of adding to the main merged ontology  ---
-# --- (see README) ---
-
-# irreflexive-property
-# asymmetric-property
-# disjoint-classes
-# disjoint-properties
-# disjoint-union
-# complement-of
-# different-individuals
-# negative-property-assertion

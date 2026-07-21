@@ -1,11 +1,16 @@
 # InferTest — expected entailments
-# Construct : DataPropertyAssertion
+# Construct : DataPropertyAssertion over a multi-level subproperty hierarchy
 #
-# Trivial by design: the asserted triple (including its literal value and
-# datatype) must simply still be there after your ontology merge +
-# reasoning pipeline.
+# Alice's age is only asserted via hasExactAgeInYears. A conformant
+# reasoner must also expose that same literal value through EVERY broader
+# datatype property in the chain (hasAge, hasNumericAttribute,
+# hasAttribute) — not just the one directly asserted. Missing any one of
+# these means the reasoner (or your pipeline's materialisation step) isn't
+# walking the full subproperty hierarchy for datatype properties.
 
 @prefix : <http://example.org/infertest#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 :DataPropertyAssertion_Alice :dataPropertyAssertionHasAge "42"^^xsd:integer .
+:DataPropertyAssertion_Alice :dataPropertyAssertionHasNumericAttribute "42"^^xsd:integer .
+:DataPropertyAssertion_Alice :dataPropertyAssertionHasAttribute "42"^^xsd:integer .

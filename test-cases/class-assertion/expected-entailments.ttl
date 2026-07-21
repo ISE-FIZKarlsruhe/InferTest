@@ -1,11 +1,16 @@
 # InferTest — expected entailments
-# Construct : ClassAssertion
+# Construct : ClassAssertion over a multi-level subclass hierarchy
 #
-# Trivial by design: the asserted triple must simply still be there after
-# your ontology merge + reasoning pipeline. If this one fails, the problem
-# is in your pipeline plumbing, not your reasoner's inference logic.
+# Buddy is only asserted a Labrador. A conformant reasoner must type him as
+# EVERY ancestor class in the chain (Dog, Mammal, Animal, LivingThing) —
+# not just the one directly asserted. Missing any one of these means the
+# reasoner (or your pipeline's materialisation step) isn't walking the
+# full subclass hierarchy.
 
 @prefix : <http://example.org/infertest#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-:ClassAssertion_Item01 rdf:type :ClassAssertion_Widget .
+:ClassAssertion_Buddy rdf:type :ClassAssertion_Dog .
+:ClassAssertion_Buddy rdf:type :ClassAssertion_Mammal .
+:ClassAssertion_Buddy rdf:type :ClassAssertion_Animal .
+:ClassAssertion_Buddy rdf:type :ClassAssertion_LivingThing .

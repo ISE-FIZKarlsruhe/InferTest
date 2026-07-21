@@ -1,12 +1,12 @@
 # InferTest — OWL 2 construct test case
-# Construct : ClassAssertion (owl:NamedIndividual rdf:type owl:Class)
+# Construct : ClassAssertion, over a multi-level rdfs:subClassOf hierarchy
 # File      : premises.ttl
-# Purpose   : Baseline sanity check — a plain class-membership assertion
-#             must survive being merged into a target ontology and passed
-#             through a pipeline unchanged. This is not really "reasoning"
-#             (no new fact is derived); it exists to catch a broken
-#             merge/import/reasoning step before you bother debugging the
-#             more interesting inference-based test cases.
+# Purpose   : Buddy is asserted a member of only the MOST SPECIFIC class in
+#             a 4-level hierarchy (Labrador < Dog < Mammal < Animal <
+#             LivingThing). A reasoner that merely echoes the direct
+#             assertion back would pass a single-level test by accident;
+#             this one only passes if it actually walks the full subclass
+#             chain and types Buddy as every ancestor class too.
 
 @prefix : <http://example.org/infertest#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -16,16 +16,30 @@
 @base <http://example.org/infertest> .
 
 <http://example.org/infertest/class-assertion> rdf:type owl:Ontology ;
-    rdfs:label "InferTest — class assertion (ClassAssertion)" .
+    rdfs:label "InferTest — class assertion over a multi-level subclass hierarchy" .
 
 #################################################################
-#    Classes
+#    Classes  (LivingThing > Animal > Mammal > Dog > Labrador)
 #################################################################
 
-:ClassAssertion_Widget rdf:type owl:Class .
+:ClassAssertion_LivingThing rdf:type owl:Class .
+
+:ClassAssertion_Animal rdf:type owl:Class ;
+    rdfs:subClassOf :ClassAssertion_LivingThing .
+
+:ClassAssertion_Mammal rdf:type owl:Class ;
+    rdfs:subClassOf :ClassAssertion_Animal .
+
+:ClassAssertion_Dog rdf:type owl:Class ;
+    rdfs:subClassOf :ClassAssertion_Mammal .
+
+:ClassAssertion_Labrador rdf:type owl:Class ;
+    rdfs:subClassOf :ClassAssertion_Dog .
 
 #################################################################
 #    Individuals
 #################################################################
 
-:ClassAssertion_Item01 rdf:type owl:NamedIndividual , :ClassAssertion_Widget .
+### Buddy is only ever asserted a Labrador — every broader type below must
+### be inferred by walking the four-level subclass chain.
+:ClassAssertion_Buddy rdf:type owl:NamedIndividual , :ClassAssertion_Labrador .

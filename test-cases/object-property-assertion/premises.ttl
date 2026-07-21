@@ -1,11 +1,14 @@
 # InferTest — OWL 2 construct test case
-# Construct : ObjectPropertyAssertion
+# Construct : ObjectPropertyAssertion, over a multi-level rdfs:subPropertyOf
+#             hierarchy
 # File      : premises.ttl
-# Purpose   : Baseline sanity check — a plain object-property assertion
-#             between two individuals must survive being merged into a
-#             target ontology and passed through a pipeline unchanged.
-#             No inference is required; this catches a broken
-#             merge/import/reasoning step early.
+# Purpose   : Alice is related to Bob through only the MOST SPECIFIC object
+#             property in a 4-level chain (isBiologicalMotherOf <
+#             isMotherOf < isParentOf < isAncestorOf < isRelatedTo). A
+#             reasoner that merely echoes the direct assertion back would
+#             pass a single-level test by accident; this one only passes
+#             if it actually walks the full subproperty chain and asserts
+#             the relationship under every broader property too.
 
 @prefix : <http://example.org/infertest#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -15,19 +18,35 @@
 @base <http://example.org/infertest> .
 
 <http://example.org/infertest/object-property-assertion> rdf:type owl:Ontology ;
-    rdfs:label "InferTest — object property assertion (ObjectPropertyAssertion)" .
+    rdfs:label "InferTest — object property assertion over a multi-level subproperty hierarchy" .
 
 #################################################################
 #    Object Properties
+#    (isRelatedTo > isAncestorOf > isParentOf > isMotherOf > isBiologicalMotherOf)
 #################################################################
 
-:objectPropertyAssertionKnows rdf:type owl:ObjectProperty .
+:objectPropertyAssertionIsRelatedTo rdf:type owl:ObjectProperty .
+
+:objectPropertyAssertionIsAncestorOf rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :objectPropertyAssertionIsRelatedTo .
+
+:objectPropertyAssertionIsParentOf rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :objectPropertyAssertionIsAncestorOf .
+
+:objectPropertyAssertionIsMotherOf rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :objectPropertyAssertionIsParentOf .
+
+:objectPropertyAssertionIsBiologicalMotherOf rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :objectPropertyAssertionIsMotherOf .
 
 #################################################################
 #    Individuals
 #################################################################
 
+### Alice is only ever asserted Bob's biological mother — every broader
+### relation below must be inferred by walking the four-level subproperty
+### chain.
 :ObjectPropertyAssertion_Alice rdf:type owl:NamedIndividual ;
-    :objectPropertyAssertionKnows :ObjectPropertyAssertion_Bob .
+    :objectPropertyAssertionIsBiologicalMotherOf :ObjectPropertyAssertion_Bob .
 
 :ObjectPropertyAssertion_Bob rdf:type owl:NamedIndividual .

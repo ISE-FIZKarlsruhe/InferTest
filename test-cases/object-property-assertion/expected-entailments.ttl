@@ -1,9 +1,16 @@
 # InferTest — expected entailments
-# Construct : ObjectPropertyAssertion
+# Construct : ObjectPropertyAssertion over a multi-level subproperty hierarchy
 #
-# Trivial by design: the asserted triple must simply still be there after
-# your ontology merge + reasoning pipeline.
+# Alice is only asserted Bob's biological mother. A conformant reasoner
+# must also relate them through EVERY broader property in the chain
+# (isMotherOf, isParentOf, isAncestorOf, isRelatedTo) — not just the one
+# directly asserted. Missing any one of these means the reasoner (or your
+# pipeline's materialisation step) isn't walking the full subproperty
+# hierarchy.
 
 @prefix : <http://example.org/infertest#> .
 
-:ObjectPropertyAssertion_Alice :objectPropertyAssertionKnows :ObjectPropertyAssertion_Bob .
+:ObjectPropertyAssertion_Alice :objectPropertyAssertionIsMotherOf :ObjectPropertyAssertion_Bob .
+:ObjectPropertyAssertion_Alice :objectPropertyAssertionIsParentOf :ObjectPropertyAssertion_Bob .
+:ObjectPropertyAssertion_Alice :objectPropertyAssertionIsAncestorOf :ObjectPropertyAssertion_Bob .
+:ObjectPropertyAssertion_Alice :objectPropertyAssertionIsRelatedTo :ObjectPropertyAssertion_Bob .

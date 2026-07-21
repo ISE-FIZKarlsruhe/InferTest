@@ -1,12 +1,14 @@
 # InferTest — OWL 2 construct test case
-# Construct : DataPropertyAssertion
+# Construct : DataPropertyAssertion, over a multi-level rdfs:subPropertyOf
+#             hierarchy of datatype properties
 # File      : premises.ttl
-# Purpose   : Baseline sanity check — a plain datatype-property assertion
-#             (with a typed literal) must survive being merged into a
-#             target ontology and passed through a pipeline unchanged.
-#             No inference is required; this catches a broken
-#             merge/import/reasoning step early, including literal/
-#             datatype mangling.
+# Purpose   : Alice's age is asserted through only the MOST SPECIFIC
+#             datatype property in a 3-level chain (hasExactAgeInYears <
+#             hasAge < hasNumericAttribute < hasAttribute). A reasoner
+#             that merely echoes the direct assertion back would pass a
+#             single-level test by accident; this one only passes if it
+#             actually walks the full subproperty chain and asserts the
+#             literal value under every broader datatype property too.
 
 @prefix : <http://example.org/infertest#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -16,17 +18,30 @@
 @base <http://example.org/infertest> .
 
 <http://example.org/infertest/data-property-assertion> rdf:type owl:Ontology ;
-    rdfs:label "InferTest — data property assertion (DataPropertyAssertion)" .
+    rdfs:label "InferTest — data property assertion over a multi-level subproperty hierarchy" .
 
 #################################################################
 #    Data Properties
+#    (hasAttribute > hasNumericAttribute > hasAge > hasExactAgeInYears)
 #################################################################
 
-:dataPropertyAssertionHasAge rdf:type owl:DatatypeProperty .
+:dataPropertyAssertionHasAttribute rdf:type owl:DatatypeProperty .
+
+:dataPropertyAssertionHasNumericAttribute rdf:type owl:DatatypeProperty ;
+    rdfs:subPropertyOf :dataPropertyAssertionHasAttribute .
+
+:dataPropertyAssertionHasAge rdf:type owl:DatatypeProperty ;
+    rdfs:subPropertyOf :dataPropertyAssertionHasNumericAttribute .
+
+:dataPropertyAssertionHasExactAgeInYears rdf:type owl:DatatypeProperty ;
+    rdfs:subPropertyOf :dataPropertyAssertionHasAge .
 
 #################################################################
 #    Individuals
 #################################################################
 
+### Alice's age is only ever asserted via the most specific property —
+### every broader datatype property below must be inferred by walking the
+### three-level subproperty chain.
 :DataPropertyAssertion_Alice rdf:type owl:NamedIndividual ;
-    :dataPropertyAssertionHasAge "42"^^xsd:integer .
+    :dataPropertyAssertionHasExactAgeInYears "42"^^xsd:integer .

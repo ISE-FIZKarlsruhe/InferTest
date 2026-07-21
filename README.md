@@ -40,9 +40,7 @@ python scripts/validate_entailments.py --inferred <your-reasoned-file>
                 └── something missing              -> FAIL, exit 1 (CI-friendly)
 ```
 
-`prepare_test_ontology.py` never runs a reasoner — it just merges Turtle/RDF files. `validate_entailments.py` never runs a reasoner either — it just checks that the expected triples are present in whatever file you point it at. Both only need `rdflib`.
-
-**Important — inconsistency-style constructs are handled separately.** A few constructs (`asymmetric-property`, `disjoint-classes`, ...) are supposed to make the ontology *inconsistent* when violated. Mixing one of those into the main merged file would make the *whole* ontology unsatisfiable and break every other test alongside it — so `prepare_test_ontology.py` writes each one to its own `infertest-<construct>-expect-inconsistent.ttl` file instead. Run your reasoner over each of those in isolation: your pipeline should observe that run fail / report inconsistency. If it completes cleanly, that construct's test has failed. (`validate_entailments.py` intentionally skips these — there's no positive triple to look for in an inconsistent ontology.)
+`prepare_test_ontology.py` never runs a reasoner — it just merges Turtle/RDF files. `validate_entailments.py` never runs a reasoner either — it just checks that the expected triples are present in whatever file you point it at. Both only need `rdflib`. Inconsistency-style constructs are handled differently — see the dedicated section below.
 
 ```bash
 pip install rdflib
@@ -71,6 +69,29 @@ python scripts/run_all_tests.py --verbose                     # print the reason
 ```
 
 It checks entailment by **refutation** rather than by scraping reasoner output: to check whether `premises.ttl` entails triple `T`, it adds `T`'s logical negation (`owl:differentFrom` for an expected `owl:sameAs`, an `owl:NegativePropertyAssertion` for an expected property assertion, an `owl:complementOf` class for an expected `rdf:type`) and checks that the result is inconsistent. This is necessary because reasoner CLIs print summaries, not full closures — e.g. HermiT's instance realization reports only an individual's most-specific type, and never prints inferred `owl:sameAs` merges at all, so scraping that text misses real entailments.
+
+## Output
+
+Both `validate_entailments.py` and `run_all_tests.py` print one `[PASS]`/`[FAIL]` line per construct (missing triples listed underneath any failure), then a single summary line + exit code for the whole run:
+
+```
+[PASS] class-assertion
+[FAIL] subclass
+       not entailed: Subclass_Rex type Subclass_Animal
+
+1/2 passed. FAILED: subclass
+```
+
+Exit `0` = all passed, `1` = something failed (CI-friendly) — but the failed construct(s) and their missing triples are always named, never just a bare pass/fail.
+
+## Inconsistency-style constructs
+
+Eight constructs test a *violation*, not a derived fact: `asymmetric-property`, `irreflexive-property`, `disjoint-classes`, `disjoint-properties`, `disjoint-union`, `complement-of`, `different-individuals`, `negative-property-assertion`. Their `premises.ttl` breaks the axiom on purpose — e.g. `disjoint-classes` asserts one individual as a member of two classes declared `owl:disjointWith` each other — so correctness means the reasoner *rejects* the ontology. There's no new triple to check, only "did this become inconsistent." That's why these folders have `expected-inconsistent.flag` instead of `expected-entailments.ttl`, and each script treats them differently:
+
+- **`prepare_test_ontology.py`** never adds one to the shared `infertest-merged.ttl` — one contradiction there would make the *entire* file unsatisfiable and mask every other construct's result. Each instead gets its own file: `build/infertest-<construct>-expect-inconsistent.ttl` (just `--target` + that one `premises.ttl`).
+- **You** run your reasoner over each of those files individually, outside this repo. A correct run should fail / report the ontology inconsistent. A clean, successful run means that construct's test has **failed** — your reasoner (or your own ontology's axioms) didn't catch the violation.
+- **`validate_entailments.py`** skips them entirely — it only prints a one-line note listing which ones were skipped. There's no positive triple to look for once an ontology is inconsistent.
+- **`run_all_tests.py`** (standalone option) checks them itself, since it already drives HermiT: it loads `premises.ttl`, runs the reasoner, and expects an `OwlReadyInconsistentOntologyError` — PASS if raised, FAIL if the reasoner reports the ontology consistent.
 
 ## Controlling which constructs are active
 
